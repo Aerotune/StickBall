@@ -6,10 +6,14 @@
 #
 # from Chingu Tutorial Demonstrating traits "velocity" and "collision_detection"
 #
+require_relative 'lense_flares'
+
 class Field < Chingu::GameState    
   trait :timer
   def initialize
     super
+    LenseFlares.load_images $window, './media/lense_flares'
+    @lense_flares = LenseFlares.new $window.width/2.0, $window.height/2.0
     $health = 6   # starting health is 6      These constants are updated throughout the game.
     $score = 0    # starting score is 0
     $stars = 0    # starting stars is 0
@@ -29,6 +33,7 @@ class Field < Chingu::GameState
 
   def setup
     super
+    @lense_flares.destroy_all
     game_objects.destroy_all
     Referee.destroy_all
     Player1.destroy_all
@@ -60,8 +65,12 @@ class Field < Chingu::GameState
     @eyes2 = EyesRight.create(:zorder => Zorder::Eyes)
 
 #    @player3 = Player2.create(:x => 60, :y => 300, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
-
+    
     @puck = FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
+    @puck_flare = @lense_flares.create @puck.x, @puck.y, Zorder::LenseFlare
+    @puck_flare.brightness = 0.2
+    @puck_flare.strength = 0.4
+    @puck_flare.scale = 0.9
 
 #    @gui = GUI.create(@player1)      # create GUI
 
@@ -150,10 +159,15 @@ class Field < Chingu::GameState
     $window.caption = "Stick Ball!     Go team go!                                             Objects: #{game_objects.size}, FPS: #{$window.fps}"
     fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
     fill_gradient(:from => Color.new(255,100,100,100), :to => Color.new(255,50,50,50), :rect => [0,@ground_y,$window.width,$window.height-@ground_y])
+    @lense_flares.draw
     super
   end
 
   def update
+    @puck_flare.x = @puck.x
+    @puck_flare.y = @puck.y
+    @puck_flare.color = @puck.color
+    @lense_flares.update
     super
 
     @score1_text.text = "#{@score1}"
