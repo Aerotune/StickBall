@@ -46,7 +46,7 @@ class LenseFlares::LenseFlare
   end
   
   def draw_horizontal_flare
-    @@horizontal_flare.draw_rot @x, @y, @z, 0, 0.5, 0.5, @scale,                @scale,           @color,      :additive
+    @@horizontal_flare.draw_rot @x, @y, @z, 0, 0.5, 0.5, @scale*@strength,      @scale,           @color,      :additive
     @@horizontal_flare.draw_rot @x, @y, @z, 0, 0.5, 0.5, @scale*@strength**1.5, @scale*@strength, @base_color, :additive
   end
   

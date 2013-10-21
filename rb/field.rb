@@ -68,9 +68,9 @@ class Field < Chingu::GameState
     
     @puck = FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
     @puck_flare = @lense_flares.create @puck.x, @puck.y, Zorder::LenseFlare
-    @puck_flare.brightness = 0.2
-    @puck_flare.strength = 0.4
-    @puck_flare.scale = 0.9
+    @puck_flare.brightness = 0.25
+    @puck_flare.strength = 0.3
+    @puck_flare.scale = 1.0
 
 #    @gui = GUI.create(@player1)      # create GUI
 
@@ -122,11 +122,14 @@ class Field < Chingu::GameState
 
   def screen_shake1
 #    if @shaking == false   # if screen shake is cooled down
+      after(30)  { @puck_flare.brightness += 0.5; @puck_flare.strength += 0.25;  }
+      after(90)  { @puck_flare.brightness -= 0.25; @puck_flare.strength -= 0.125;  }
+      after(100) { @puck_flare.brightness -= 0.25; @puck_flare.strength -= 0.125;  }
       game_objects.each do |object|
         object.x += @shake1
-        after(30) {object.y += @shake2}
-        after(60) {object.x -= @shake1}
-        after(90) {object.y -= @shake2}
+        after(30)  {object.y += @shake2}
+        after(60)  {object.x -= @shake1}
+        after(90)  {object.y -= @shake2}
         after(120) {object.x += @shake1}
         after(150) {object.y += @shake2}
         after(180) {object.x -= @shake1}
@@ -139,11 +142,14 @@ class Field < Chingu::GameState
 
   def screen_shake2
 #    if @shaking == false   # if screen shake is cooled down
+      after(30)  { @puck_flare.brightness += 0.5; @puck_flare.strength += 0.25;  }
+      after(90)  { @puck_flare.brightness -= 0.25; @puck_flare.strength -= 0.125;  }
+      after(100) { @puck_flare.brightness -= 0.25; @puck_flare.strength -= 0.125;  }
       game_objects.each do |object|  # move each object left first
         object.x -= @shake1
-        after(30) {object.y += @shake2}
-        after(60) {object.x += @shake1}
-        after(90) {object.y -= @shake2}
+        after(30)  {object.y += @shake2}
+        after(60)  {object.x += @shake1}
+        after(90)  {object.y -= @shake2}
         after(120) {object.x -= @shake1}
         after(150) {object.y += @shake2}
         after(180) {object.x += @shake1}
