@@ -50,7 +50,7 @@ class Introduction < Chingu::GameState
       @player1_select.input = { :right_shift => :ready, :right => :go_right, :left => :go_left,
                               :holding_up => :go_up, :holding_down => :go_down}
       @ready1 = false
-      @caption1 = Chingu::Text.create("#{$image1}", :y => @player1_select.y - 150, :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
+      @caption1 = Chingu::Text.create(player_1_character_name, :y => @player1_select.y - 150, :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
       @caption1.x = @player1_select.x - @caption1.width/2 # center text
       @text2 = Chingu::Text.create("Choose Your Player", :y => 510, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
       @text2.x =800/2 - @text2.width/2 # center text
@@ -60,7 +60,7 @@ class Introduction < Chingu::GameState
       @player2_select.input = {:left_shift => :ready, :a => :go_left, :d => :go_right, :holding_w => :go_up, :holding_s => :go_down}
       @ready2 = false
 
-      @caption2 = Chingu::Text.create("#{$image2}", :y => @player2_select.y - 150, :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
+      @caption2 = Chingu::Text.create(player_2_character_name, :y => @player2_select.y - 150, :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
       @caption2.x = @player2_select.x - @caption2.width/2 # center text
 
       @text = Chingu::Text.create("Press Shift", :y => 550, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
@@ -84,16 +84,24 @@ class Introduction < Chingu::GameState
     @ready2 = true
     puts "ready"
   end
+  
+  def player_1_character_name
+    $image1.split('_').map{|s|s.capitalize}.join(' ')
+  end
+  
+  def player_2_character_name
+    $image2.split('_').map{|s|s.capitalize}.join(' ')
+  end
 
   def update
     super
     @counter += @count
     if @caption1 != nil
-      @caption1.text = $image1
+      @caption1.text = player_1_character_name
       @caption1.x = @player1_select.x - @caption1.width/2 # center text
     end
     if @caption2 != nil
-      @caption2.text = $image2
+      @caption2.text = player_2_character_name
       @caption2.x = @player2_select.x - @caption2.width/2 # center text
     end
     if @song_fade == true # fade song if @song_fade is true
