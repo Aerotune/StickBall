@@ -240,7 +240,11 @@ class Referee < Player
 
   def update
     super
-    @mouth.scale_y = -0.15
+    if $score1 > $score2
+      @direction = -1
+    else
+      @direction = 1
+    end
     go_right if rand(@rand) == 5
     go_down  if rand(@rand) == 5
     go_left  if rand(@rand) == 5

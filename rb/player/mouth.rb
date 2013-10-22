@@ -1,5 +1,5 @@
 class Mouth
-  attr_accessor :scale_y
+  attr_accessor :scale_y, :mood
   
   def initialize parent
     @parent = parent
