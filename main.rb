@@ -9,6 +9,7 @@ require_relative 'rb/field'
 require_relative 'rb/players'
 require_relative 'rb/objects'
 require_relative 'rb/gui'
+require_relative 'rb/beginning'
 
 module Zorder  # define some frequently used Zorders
   GUI = 400
@@ -22,6 +23,12 @@ module Zorder  # define some frequently used Zorders
   Particle = 210
 end
 
+
+module Colors   # define some colors
+  Dark_Orange = Gosu::Color.new(0xFFCC3300)
+  White = Gosu::Color.new(0xFFFFFFFF)
+  Blue_Laser = Gosu::Color.new(0xFF86EFFF)
+end
 
 
 #
@@ -60,8 +67,21 @@ class GameWindow < Chingu::Window
     $max_y = 615
     $scr_edge = 15
     $cooling_down = 70
+    $health = 6
+    $health1 = 6
+    $health2 = 6
+    $score = 0
+    $stars1 = 0
+    $stars2 = 0
+    $weapon = 1   # starting weapon is 1
+    $image1 = "boy"
+    $image2 = "boy"
     $star_grab = Sound["media/audio/star_pickup.ogg"]
     $power_up = Sound["media/audio/power_up.ogg"]
+    $bang = Sound["media/audio/bang.ogg"]
+    $bang1 = Sound["media/audio/bang1.ogg"]
+    $bang2 = Sound["media/audio/bang2.ogg"]
+    $guitar_riff = Sound["media/audio/guitar_riff.ogg"]
     self.caption = "Stick Ball"
     @cursor = true # comment out to hide cursor
     self.input = { :esc => :exit,
@@ -71,11 +91,11 @@ class GameWindow < Chingu::Window
                  :z => :log,
                  :r => lambda{current_game_state.setup}
                }
-#    retrofy
+    retrofy
   end
 
   def setup
-    push_game_state(Field)
+    push_game_state(Beginning)
   end
 
   def log
