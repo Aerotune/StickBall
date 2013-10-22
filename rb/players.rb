@@ -161,7 +161,28 @@ end
 
 
 
-
+class Eyes
+  def initialize parent
+    @parent = parent
+    @image = Gosu::Image["players/eye_sockets.png"]
+    @eye_ball = Gosu::Image["players/eye_ball.png"]
+    @x = 0
+    @y = 0
+  end
+  
+  def update
+    @x = @parent.x + 3 * @parent.direction
+    @y = @parent.y - 6
+    puck = @parent.game_state.puck
+    @eye_angle = Gosu.angle @x, @y, puck.x, puck.y
+  end
+  
+  def draw
+    @image.draw_rot @x, @y, Zorder::Eyes, 0, 0.5, 1.0
+    @eye_ball.draw_rot @x-7+Gosu.offset_x(@eye_angle, 3), @y-2+Gosu.offset_y(@eye_angle, 2), Zorder::Eyes, 0, 0.5, 1.0
+    @eye_ball.draw_rot @x+7+Gosu.offset_x(@eye_angle, 3), @y-2+Gosu.offset_y(@eye_angle, 2), Zorder::Eyes, 0, 0.5, 1.0
+  end
+end
 
 
 
@@ -169,12 +190,15 @@ end
 class Player < Chingu::GameObject
   trait :bounding_box, :debug => DEBUG
   traits :velocity, :collision_detection
+  attr_reader :direction
+  
   def setup
     @speed = 12
     @squeeze_y = 1.0
     @direction = 1
     @hit_time = Gosu.milliseconds - 3000
     @wobble_resistance = 0.005
+    @eyes = Eyes.new self
   end
   def go_left
     @x -= @speed
@@ -210,6 +234,12 @@ class Player < Chingu::GameObject
     self.factor_y = @squeeze_y
     self.factor_x = hit_wobble_factor * @direction
     @squeeze_y = 1.0
+    @eyes.update
+  end
+  
+  def draw
+    super
+    @eyes.draw
   end
 end
 
@@ -262,22 +292,6 @@ class Player2 < Player
     super
     @image = Gosu::Image["players/#{$image2}.png"]
     cache_bounding_box
-  end
-end
-
-
-#
-#   EYES
-#
-class EyesLeft < Chingu::GameObject
-  def setup
-    @image = Gosu::Image["players/eyes_left.png"]
-  end
-end
-
-class EyesRight < Chingu::GameObject
-  def setup
-    @image = Gosu::Image["players/eyes_right.png"]
   end
 end
 

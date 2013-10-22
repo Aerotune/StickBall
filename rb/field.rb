@@ -6,6 +6,8 @@ require_relative 'lense_flares'
 #
 class Field < Chingu::GameState    
   trait :timer
+  attr_reader :puck
+  
   def initialize
     super
     LenseFlares.load_images $window, './media/lense_flares'
@@ -31,8 +33,6 @@ class Field < Chingu::GameState
     Referee.destroy_all
     Player1.destroy_all
     Player2.destroy_all
-    EyesLeft.destroy_all
-    EyesRight.destroy_all
 
     if @score1_text != nil; @score1_text.destroy; end # if it exists, destroy it
     if @score2_text != nil; @score2_text.destroy; end # if it exists, destroy it
@@ -50,12 +50,8 @@ class Field < Chingu::GameState
     @player1 = Player1.create(:x => 740, :y => 300, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
     @player1.input = {:holding_left => :go_left, :holding_right => :go_right, :holding_up => :go_up, :holding_down => :go_down}
 
-    @eyes1 = EyesLeft.create(:zorder => Zorder::Eyes)
-
     @player2 = Player2.create(:x => 60, :y => 300, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
     @player2.input = {:holding_a => :go_left, :holding_d => :go_right, :holding_w => :go_up, :holding_s => :go_down}
-
-    @eyes2 = EyesRight.create(:zorder => Zorder::Eyes)
 
 #    @player3 = Player2.create(:x => 60, :y => 300, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
 
@@ -287,11 +283,10 @@ class Field < Chingu::GameState
     @score1_text.text = "#{$score1}"
     @score2_text.text = "#{$score2}"
 
-    @eyes1.x = @player1.x - 3
-    @eyes1.y = @player1.y - 12
-
-    @eyes2.x = @player2.x + 3
-    @eyes2.y = @player2.y - 12
+    #@eyes1.x = @player1.x - 3
+    #@eyes1.y = @player1.y - 12
+    #@eyes2.x = @player2.x + 3
+    #@eyes2.y = @player2.y - 12
 
     if @player3 != nil
       if @player3.y > @puck.y && rand(5) == 1
