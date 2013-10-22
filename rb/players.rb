@@ -88,7 +88,7 @@ class CharWheel1 < CharWheel
 #    @picture = ["players/boy.png", "players/monk.png", "players/tanooki.png",
 #                "players/cult_leader.png", "players/villager.png", "players/knight.png",
 #                "players/sorceror.png" ]
-    @p = 0
+    @p = @picture.index($image1)
     @image = Gosu::Image["players/#{@picture[@p]}.png"]
 #    @image = Gosu::Image[@picture[@p]]
     @click = Sound["media/audio/keypress.ogg"]
@@ -131,6 +131,11 @@ end
 
 
 class CharWheel2 < CharWheel
+  def setup
+    super
+    @p = @picture.index($image2)
+    @image = Gosu::Image["players/#{@picture[@p]}.png"]
+  end
   def go_left
     if @ready == false
       @click.play
@@ -159,35 +164,9 @@ class CharWheel2 < CharWheel
   end
 end
 
-
-
-class Eyes
-  def initialize parent
-    @parent = parent
-    @image = Gosu::Image["players/eye_sockets.png"]
-    @eye_ball = Gosu::Image["players/eye_ball.png"]
-    @x = 0
-    @y = 0
-  end
-  
-  def update
-    @x = @parent.x + 3 * @parent.direction
-    @y = @parent.y - 6
-    puck = @parent.game_state.puck
-    @eye_angle = Gosu.angle @x, @y, puck.x, puck.y
-  end
-  
-  def draw
-    @image.draw_rot @x, @y, Zorder::Eyes, 0, 0.5, 1.0
-    @eye_ball.draw_rot @x-7+Gosu.offset_x(@eye_angle, 3), @y-2+Gosu.offset_y(@eye_angle, 2), Zorder::Eyes, 0, 0.5, 1.0
-    @eye_ball.draw_rot @x+7+Gosu.offset_x(@eye_angle, 3), @y-2+Gosu.offset_y(@eye_angle, 2), Zorder::Eyes, 0, 0.5, 1.0
-  end
-end
-
-
-
-
 class Player < Chingu::GameObject
+  require_relative 'player/eyes'
+  require_relative 'player/mouth'
   trait :bounding_box, :debug => DEBUG
   traits :velocity, :collision_detection
   attr_reader :direction
@@ -199,6 +178,7 @@ class Player < Chingu::GameObject
     @hit_time = Gosu.milliseconds - 3000
     @wobble_resistance = 0.005
     @eyes = Eyes.new self
+    @mouth = Mouth.new self
   end
   def go_left
     @x -= @speed
@@ -223,11 +203,11 @@ class Player < Chingu::GameObject
   def hit_wobble_factor
     time = Gosu.milliseconds - @hit_time
     
-    1 - (Math.sin(time/31.4)/(time**1.7*@wobble_resistance))
+    1 - (Math.sin(time/25.0)/(time**1.7*@wobble_resistance))
   end
   
   def wobble
-    @hit_time = Gosu.milliseconds - 40
+    @hit_time = Gosu.milliseconds - 30
   end
   
   def update
@@ -235,11 +215,13 @@ class Player < Chingu::GameObject
     self.factor_x = hit_wobble_factor * @direction
     @squeeze_y = 1.0
     @eyes.update
+    @mouth.update
   end
   
   def draw
     super
     @eyes.draw
+    @mouth.draw
   end
 end
 
@@ -258,7 +240,7 @@ class Referee < Player
 
   def update
     super
-
+    @mouth.scale_y = -0.15
     go_right if rand(@rand) == 5
     go_down  if rand(@rand) == 5
     go_left  if rand(@rand) == 5

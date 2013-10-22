@@ -15,7 +15,7 @@ module Zorder  # define some frequently used Zorders
   GUI = 400
   Text = 300
   Main_Character = 200
-  Eyes = 201
+  Face = 201
   Main_Character_Particles = 199
   Object = 50
   Projectile = 220
@@ -74,8 +74,8 @@ class GameWindow < Chingu::Window
     $stars1 = 0
     $stars2 = 0
     $weapon = 1   # starting weapon is 1
-    $image1 = "boy"
-    $image2 = "boy"
+    $image1 = "monk"
+    $image2 = "tanooki"
     $star_grab = Sound["media/audio/star_pickup.ogg"]
     $power_up = Sound["media/audio/power_up.ogg"]
     $bang = Sound["media/audio/bang.ogg"]
