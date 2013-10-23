@@ -1,6 +1,6 @@
 
 require_relative 'lense_flares'
-
+#require_relative 'mist'
 #
 # FIELD GAMESTATE
 #
@@ -13,6 +13,7 @@ class Field < Chingu::GameState
     LenseFlares.load_images $window, './media/lense_flares'
     @lense_flares = LenseFlares.new $window.width/2.0, $window.height/2.0
     @star_flares = {}
+    @mist = Ashton::Shader.new fragment: './rb/mist.frag', uniforms: { time: 0.0, alpha: 0.5, mist_color: [230/255.0, 250/255.0, 255/255.0, 1.0] }
     
     self.input = { :p => Pause,
                    :space => :fire,
@@ -256,11 +257,14 @@ class Field < Chingu::GameState
   end
 
   def draw
+    $window.post_process @mist do
+      fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
+      fill_gradient(:from => Color.new(255,100,100,100), :to => Color.new(255,50,50,50), :rect => [0,@ground_y,$window.width,$window.height-@ground_y])    
+      super
+      @lense_flares.draw
+    end
     $window.caption = "Stick Ball!     Go team go!                                             Objects: #{game_objects.size}, FPS: #{$window.fps}"
-    fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
-    fill_gradient(:from => Color.new(255,100,100,100), :to => Color.new(255,50,50,50), :rect => [0,@ground_y,$window.width,$window.height-@ground_y])
-    @lense_flares.draw
-    super
+    
   end
 
 
@@ -269,6 +273,7 @@ class Field < Chingu::GameState
     @puck_flare.y = @puck.y
     @puck_flare.color = @puck.color
     @lense_flares.update
+    @mist.time = Gosu.milliseconds/1000.0
     super
 
     move_referee
