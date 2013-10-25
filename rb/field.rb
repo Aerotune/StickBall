@@ -13,7 +13,8 @@ class Field < Chingu::GameState
     LenseFlares.load_images $window, './media/lense_flares'
     @lense_flares = LenseFlares.new $window.width/2.0, $window.height/2.0
     @star_flares = {}
-    @mist = Ashton::Shader.new fragment: './rb/mist.frag', uniforms: { time: 0.0, alpha: 0.5, mist_color: [230/255.0, 250/255.0, 255/255.0, 1.0] }
+    @mist_clear_x = 0.0
+    @mist = Ashton::Shader.new fragment: './rb/mist.frag', uniforms: { time: 0.0, alpha: 1.0, mist_color: [230/255.0, 250/255.0, 255/255.0, 1.0], clear_x: @mist_clear_x }
     
     self.input = { :p => Pause,
                    :space => :fire,
@@ -275,6 +276,10 @@ class Field < Chingu::GameState
     @lense_flares.update
     @mist.time = Gosu.milliseconds/1000.0
     super
+    
+    #@mist.clear_x = @player2.x
+    @mist_clear_x += (@player2.x-@mist_clear_x)*0.1
+    @mist.clear_x = @mist_clear_x
 
     move_referee
     collision_check

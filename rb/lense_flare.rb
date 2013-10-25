@@ -47,8 +47,10 @@ class LenseFlares::LenseFlare
   end
   
   def draw_horizontal_flare
-    @@horizontal_flare.draw_rot @x, @y, @z, @angle, 0.5, 0.5, @scale*(@strength+1)/2.0, @scale,           @color,      :additive
-    @@horizontal_flare.draw_rot @x, @y, @z, @angle, 0.5, 0.5, @scale*@strength**1.5,    @scale*@strength, @base_color, :additive
+    scale = @scale.abs*@strength**1.5
+    p [@scale, @strength, scale] if scale.kind_of? Complex
+    @@horizontal_flare.draw_rot @x, @y, @z, @angle, 0.5, 0.5, @scale.abs*(@strength+1)/2.0,  @scale,           @color,      :additive
+    @@horizontal_flare.draw_rot @x, @y, @z, @angle, 0.5, 0.5, @scale.abs*@strength.abs**1.5, @scale*@strength, @base_color, :additive
   end
   
   def draw_star_flare
